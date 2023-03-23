@@ -9,6 +9,7 @@ namespace StudentInformationManagementSystem
 		public static void Main(string[] args)
 		{
 			MainMenu();
+			
 		}
 
 		public static void MainMenu()
@@ -42,6 +43,7 @@ namespace StudentInformationManagementSystem
 
 		public static void Insertion()
 		{
+			// 학생 정보 저장
 			Console.Write("Name ");
 			string name = Console.ReadLine();
 
@@ -62,6 +64,7 @@ namespace StudentInformationManagementSystem
 
 		public static void Search()
 		{
+			// 저장한 학생 정보 탐색
 			Console.WriteLine("1.Search by name ");
 			Console.WriteLine("2.Search by student ID(10 numbers) ");
 			Console.WriteLine("3.Search by admission year(4 numbers) ");
@@ -97,11 +100,13 @@ namespace StudentInformationManagementSystem
 
 		public static void SortingOption()
 		{
+			// 저장한 학생 정보 정렬
 			MainMenu();
 		}
 
 		public static void Exit()
 		{
+			// 프로그램 종료
 			Console.Write("프로그램을 종료합니다.");
 		}
 
