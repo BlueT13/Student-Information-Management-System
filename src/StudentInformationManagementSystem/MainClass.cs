@@ -89,11 +89,11 @@ namespace StudentInformationManagementSystem
 		// 학생 정보 탐색
 		public static void Search()
 		{
-			Console.WriteLine("1.Search by name ");
-			Console.WriteLine("2.Search by student ID(10 numbers) ");
-			Console.WriteLine("3.Search by admission year(4 numbers) ");
-			Console.WriteLine("4.Search by department name ");
-			Console.WriteLine("5.List All ");
+			Console.WriteLine("1. Search by name");
+			Console.WriteLine("2. Search by student ID (10 numbers)");
+			Console.WriteLine("3. Search by admission year (4 numbers)");
+			Console.WriteLine("4. Search by department name");
+			Console.WriteLine("5. List All");
 			Console.Write(">");
 			int input = Convert.ToInt32(Console.ReadLine());
 
@@ -131,6 +131,35 @@ namespace StudentInformationManagementSystem
 		// 학생 정보 정렬
 		public static void SortingOption()
 		{
+			Console.WriteLine("1. Sort by name");
+			Console.WriteLine("2. Sort by student ID");
+			Console.WriteLine("3. Sort by Admission Year");
+			Console.WriteLine("4. Sort by Department name");
+			Console.Write(">");
+			int input = Convert.ToInt32(Console.ReadLine());
+
+			Console.WriteLine();
+			switch (input)
+			{
+				case 1:
+					SortByName();
+					break;
+
+				case 2:
+					Console.WriteLine();
+					SortByID();
+					break;
+
+				case 3:
+					Console.WriteLine();
+					SortByBirth();
+					break;
+
+				case 4:
+					Console.WriteLine();
+					SortByDepartment();
+					break;
+			}
 			Console.WriteLine();
 			MainMenu();
 		}
@@ -225,6 +254,26 @@ namespace StudentInformationManagementSystem
 			{
 				Console.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", student.name, student.id, student.department, student.birth, student.tel);
 			}
+		}
+
+		private static void SortByName()
+		{
+
+		}
+
+		private static void SortByID()
+		{
+
+		}
+
+		private static void SortByBirth()
+		{
+
+		}
+
+		private static void SortByDepartment()
+		{
+
 		}
 	}
 }
