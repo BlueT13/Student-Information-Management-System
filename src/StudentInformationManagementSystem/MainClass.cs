@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
 namespace StudentInformationManagementSystem
@@ -105,22 +106,18 @@ namespace StudentInformationManagementSystem
 					break;
 
 				case 2:
-					Console.WriteLine();
 					SearchByID();
 					break;
 
 				case 3:
-					Console.WriteLine();
 					SearchByBirth();
 					break;
 
 				case 4:
-					Console.WriteLine();
 					SearchByDepartment();
 					break;
 
 				case 5:
-					Console.WriteLine();
 					ListAll();
 					break;
 			}
@@ -142,22 +139,23 @@ namespace StudentInformationManagementSystem
 			switch (input)
 			{
 				case 1:
-					SortByName();
+					students = students.OrderBy(x => x.Value.name).ToDictionary(x => x.Key, x => x.Value);
+					Console.WriteLine("Sort by name complete");
 					break;
 
 				case 2:
-					Console.WriteLine();
-					SortByID();
+					students = students.OrderBy(x => x.Value.id).ToDictionary(x => x.Key, x => x.Value);
+					Console.WriteLine("Sort by ID complete");
 					break;
 
 				case 3:
-					Console.WriteLine();
-					SortByBirth();
+					students = students.OrderBy(x => x.Value.birth).ToDictionary(x => x.Key, x => x.Value);
+					Console.WriteLine("Sort by Admission Year complete");
 					break;
 
 				case 4:
-					Console.WriteLine();
-					SortByDepartment();
+					students = students.OrderBy(x => x.Value.department).ToDictionary(x => x.Key, x => x.Value);
+					Console.WriteLine("Sort by Department name complete");
 					break;
 			}
 			Console.WriteLine();
@@ -170,17 +168,18 @@ namespace StudentInformationManagementSystem
 			Console.Write("프로그램을 종료합니다.");
 		}
 
+		public static string format = "{0,-20} {1,-20} {2,-20} {3,-20} {4,-20}";
 		private static void SearchByName()
 		{
 			Console.Write("Name keyword? ");
 			string name = Console.ReadLine();
-			Console.WriteLine("Name\tStudentID\tDept\t\tBirth Year\tTel");
+			Console.WriteLine(format, "Name", "StudentID", "Dept", "Birth Year", "Tel");
 			bool dataExist = false;
 			foreach (Student student in students.Values)
 			{
 				if (student.name == name)
 				{
-					Console.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", student.name, student.id, student.department, student.birth, student.tel);
+					Console.WriteLine(format, student.name, student.id, student.department, student.birth, student.tel);
 					dataExist = true;
 				}
 			}
@@ -194,13 +193,14 @@ namespace StudentInformationManagementSystem
 		{
 			Console.Write("ID keyword? ");
 			string id = Console.ReadLine();
-			Console.WriteLine("Name\tStudentID\tDept\t\tBirth Year\tTel");
+			Console.WriteLine(format, "Name", "StudentID", "Dept", "Birth Year", "Tel");
 			bool dataExist = false;
 			foreach (Student student in students.Values)
 			{
 				if (student.id == id)
 				{
-					Console.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", student.name, student.id, student.department, student.birth, student.tel);
+					Console.WriteLine(format, student.name, student.id, student.department, student.birth, student.tel);
+					dataExist = true;
 				}
 			}
 			if (!dataExist)
@@ -213,13 +213,14 @@ namespace StudentInformationManagementSystem
 		{
 			Console.Write("Birth keyword? ");
 			string birth = Console.ReadLine();
-			Console.WriteLine("Name\tStudentID\tDept\t\tBirth Year\tTel");
+			Console.WriteLine(format, "Name", "StudentID", "Dept", "Birth Year", "Tel");
 			bool dataExist = false;
 			foreach (Student student in students.Values)
 			{
 				if (student.birth == birth)
 				{
-					Console.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", student.name, student.id, student.department, student.birth, student.tel);
+					Console.WriteLine(format, student.name, student.id, student.department, student.birth, student.tel);
+					dataExist = true;
 				}
 			}
 			if (!dataExist)
@@ -232,13 +233,14 @@ namespace StudentInformationManagementSystem
 		{
 			Console.Write("Department name keyword? ");
 			string department = Console.ReadLine();
-			Console.WriteLine("Name\tStudentID\tDept\t\tBirth Year\tTel");
+			Console.WriteLine(format, "Name", "StudentID", "Dept", "Birth Year", "Tel");
 			bool dataExist = false;
 			foreach (Student student in students.Values)
 			{
 				if (student.department == department)
 				{
-					Console.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", student.name, student.id, student.department, student.birth, student.tel);
+					Console.WriteLine(format, student.name, student.id, student.department, student.birth, student.tel);
+					dataExist = true;
 				}
 			}
 			if (!dataExist)
@@ -249,31 +251,32 @@ namespace StudentInformationManagementSystem
 
 		private static void ListAll()
 		{
-			Console.WriteLine("Name\tStudentID\tDept\t\tBirth Year\tTel");
+			Console.WriteLine(format, "Name", "StudentID", "Dept", "Birth Year", "Tel");
 			foreach (Student student in students.Values)
 			{
-				Console.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", student.name, student.id, student.department, student.birth, student.tel);
+				Console.WriteLine(format, student.name, student.id, student.department, student.birth, student.tel);
 			}
 		}
 
-		private static void SortByName()
-		{
+		//private static Dictionary<string, int> SortByName(Dictionary<string, int> students)
+		//{
 
-		}
+		//	return students.OrderBy(x => x.Value.name).ToDictionary(x => x.Key, x => x.Value);
+		//}
 
-		private static void SortByID()
-		{
+		//private static Dictionary<string, int> SortByID(Dictionary<string, int> students)
+		//{
 
-		}
+		//}
 
-		private static void SortByBirth()
-		{
+		//private static Dictionary<string, int> SortByBirth(Dictionary<string, int> students)
+		//{
 
-		}
+		//}
 
-		private static void SortByDepartment()
-		{
+		//private static Dictionary<string, int> SortByDepartment(Dictionary<string, int> students)
+		//{
 
-		}
+		//}
 	}
 }
