@@ -24,19 +24,17 @@ namespace StudentInformationManagementSystem
 
 	internal class MainClass
 	{
-		// 학생 정보 Dictionary로 저장
 		public static Dictionary<string, Student> students = new Dictionary<string, Student>();
 
 		public static void Main(string[] args)
 		{
-			if (File.Exists("C:\\Users\\YongHo\\Student-Information-Management-System\\students.txt"))
+			if (File.Exists("C:\\Users\\YongHo\\Student-Information-Management-System\\file1.txt"))
 			{
 				students = Load();
 			}
 			MainMenu();
 		}
 
-		// 메인 메뉴
 		public static void MainMenu()
 		{
 			Console.WriteLine("1. Insertion");
@@ -67,7 +65,6 @@ namespace StudentInformationManagementSystem
 			}
 		}
 
-		// 학생 정보 입력
 		public static void Insertion()
 		{
 			Console.Write("Name ");
@@ -75,9 +72,17 @@ namespace StudentInformationManagementSystem
 
 			Console.Write("Student ID (10 digits) ");
 			string id = Console.ReadLine();
+			if (id.Length != 10)
+			{
+				throw new ArgumentException("Student ID must be 10 digits");
+			}
 
 			Console.Write("Birth Year (4 digits) ");
 			string birth = Console.ReadLine();
+			if (birth.Length != 4)
+			{
+				throw new ArgumentException("birth length must be 4 characters");
+			}
 
 			Console.Write("Department ");
 			string department = Console.ReadLine();
@@ -85,15 +90,23 @@ namespace StudentInformationManagementSystem
 			Console.Write("Tel ");
 			string tel = Console.ReadLine();
 
-			Student student = new Student(name, id, birth, department, tel);
-			students.Add(id, student);
-			students = SortByName(students);
-			Save(students);
+			try
+			{
+				Student student = new Student(name, id, birth, department, tel);
+				students.Add(id, student);
+				students = SortByName(students);
+				Save(students);
+			}
+			catch (ArgumentException)
+			{
+				Console.WriteLine();
+				Console.WriteLine("Error : Already inserted");
+			}
+
 			Console.WriteLine();
 			MainMenu();
 		}
 
-		// 학생 정보 탐색
 		public static void Search()
 		{
 			Console.WriteLine("1. Search by name");
@@ -131,7 +144,6 @@ namespace StudentInformationManagementSystem
 			MainMenu();
 		}
 
-		// 학생 정보 정렬
 		public static void SortingOption()
 		{
 			Console.WriteLine("1. Sort by name");
@@ -168,7 +180,6 @@ namespace StudentInformationManagementSystem
 			MainMenu();
 		}
 
-		// 프로그램 종료
 		public static void Exit()
 		{
 			Console.Write("프로그램을 종료합니다.");
@@ -286,18 +297,18 @@ namespace StudentInformationManagementSystem
 
 		public static void Save(Dictionary<string, Student> students)
 		{
-			using (StreamWriter writer = new StreamWriter("C:\\Users\\YongHo\\Student-Information-Management-System\\students.txt"))
+			using (StreamWriter writer = new StreamWriter("C:\\Users\\YongHo\\Student-Information-Management-System\\file1.txt"))
 			{
 				foreach (Student student in students.Values)
 				{
-					writer.WriteLine("{0}, {1}, {2}, {3}, {4}", student.name, student.id, student.birth, student.department, student.tel);
+					writer.WriteLine("{0},{1},{2},{3},{4}", student.name, student.id, student.birth, student.department, student.tel);
 				}
 			}
 		}
 
 		public static Dictionary<string, Student> Load()
 		{
-			using (StreamReader reader = new StreamReader("C:\\Users\\YongHo\\Student-Information-Management-System\\students.txt"))
+			using (StreamReader reader = new StreamReader("C:\\Users\\YongHo\\Student-Information-Management-System\\file1.txt"))
 			{
 				string line;
 				while ((line = reader.ReadLine()) != null)
