@@ -24,8 +24,15 @@ namespace StudentInformationManagementSystem
 
 	internal class MainClass
 	{
+		// 학생 정보 Dictionary로 저장
+		public static Dictionary<string, Student> students = new Dictionary<string, Student>();
+
 		public static void Main(string[] args)
 		{
+			if (File.Exists("C:\\Users\\YongHo\\Student-Information-Management-System\\students.txt"))
+			{
+				students = Load();
+			}
 			MainMenu();
 		}
 
@@ -60,9 +67,6 @@ namespace StudentInformationManagementSystem
 			}
 		}
 
-		// 학생 정보 Dictionary로 저장
-		public static Dictionary<string, Student> students = new Dictionary<string, Student>();
-
 		// 학생 정보 입력
 		public static void Insertion()
 		{
@@ -83,6 +87,8 @@ namespace StudentInformationManagementSystem
 
 			Student student = new Student(name, id, birth, department, tel);
 			students.Add(id, student);
+			students = SortByName(students);
+			Save(students);
 			Console.WriteLine();
 			MainMenu();
 		}
@@ -139,22 +145,22 @@ namespace StudentInformationManagementSystem
 			switch (input)
 			{
 				case 1:
-					students = students.OrderBy(x => x.Value.name).ToDictionary(x => x.Key, x => x.Value);
+					students = SortByName(students);
 					Console.WriteLine("Sort by name complete");
 					break;
 
 				case 2:
-					students = students.OrderBy(x => x.Value.id).ToDictionary(x => x.Key, x => x.Value);
+					students = SortByID(students);
 					Console.WriteLine("Sort by ID complete");
 					break;
 
 				case 3:
-					students = students.OrderBy(x => x.Value.birth).ToDictionary(x => x.Key, x => x.Value);
+					students = SortByBirth(students);
 					Console.WriteLine("Sort by Admission Year complete");
 					break;
 
 				case 4:
-					students = students.OrderBy(x => x.Value.department).ToDictionary(x => x.Key, x => x.Value);
+					students = SortByDepartment(students);
 					Console.WriteLine("Sort by Department name complete");
 					break;
 			}
@@ -258,25 +264,57 @@ namespace StudentInformationManagementSystem
 			}
 		}
 
-		//private static Dictionary<string, int> SortByName(Dictionary<string, int> students)
-		//{
+		private static Dictionary<string, Student> SortByName(Dictionary<string, Student> students)
+		{
+			return students.OrderBy(x => x.Value.name).ToDictionary(x => x.Key, x => x.Value);
+		}
 
-		//	return students.OrderBy(x => x.Value.name).ToDictionary(x => x.Key, x => x.Value);
-		//}
+		private static Dictionary<string, Student> SortByID(Dictionary<string, Student> students)
+		{
+			return students.OrderBy(x => x.Value.id).ToDictionary(x => x.Key, x => x.Value);
+		}
 
-		//private static Dictionary<string, int> SortByID(Dictionary<string, int> students)
-		//{
+		private static Dictionary<string, Student> SortByBirth(Dictionary<string, Student> students)
+		{
+			return students.OrderBy(x => x.Value.birth).ToDictionary(x => x.Key, x => x.Value);
+		}
 
-		//}
+		private static Dictionary<string, Student> SortByDepartment(Dictionary<string, Student> students)
+		{
+			return students.OrderBy(x => x.Value.department).ToDictionary(x => x.Key, x => x.Value);
+		}
 
-		//private static Dictionary<string, int> SortByBirth(Dictionary<string, int> students)
-		//{
+		public static void Save(Dictionary<string, Student> students)
+		{
+			using (StreamWriter writer = new StreamWriter("C:\\Users\\YongHo\\Student-Information-Management-System\\students.txt"))
+			{
+				foreach (Student student in students.Values)
+				{
+					writer.WriteLine("{0}, {1}, {2}, {3}, {4}", student.name, student.id, student.birth, student.department, student.tel);
+				}
+			}
+		}
 
-		//}
+		public static Dictionary<string, Student> Load()
+		{
+			using (StreamReader reader = new StreamReader("C:\\Users\\YongHo\\Student-Information-Management-System\\students.txt"))
+			{
+				string line;
+				while ((line = reader.ReadLine()) != null)
+				{
+					string[] fields = line.Split(',');
+					string name = fields[0];
+					string id = fields[1];
+					string birth = fields[2];
+					string department = fields[3];
+					string tel = fields[4];
 
-		//private static Dictionary<string, int> SortByDepartment(Dictionary<string, int> students)
-		//{
+					Student student = new Student(name, id, birth, department, tel);
+					students.Add(id, student);
+				}
+			}
 
-		//}
+			return students;
+		}
 	}
 }
