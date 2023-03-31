@@ -4,6 +4,9 @@ using System.Xml.Linq;
 
 namespace StudentInformationManagementSystem
 {
+	// TODO(이태환): 클래스별로 파일 분류
+	// TODO(이태환): 프린트 메소드와 기능 메소드 분류
+	// 리스트나 벡터를 사용해도 무방
 	public class Student
 	{
 		public string name;
@@ -24,18 +27,42 @@ namespace StudentInformationManagementSystem
 
 	internal class MainClass
 	{
+		public static string format = "{0,-20} {1,-20} {2,-20} {3,-20} {4,-20}";
 		public static Dictionary<string, Student> students = new Dictionary<string, Student>();
 
 		public static void Main(string[] args)
 		{
 			if (File.Exists("C:\\Users\\YongHo\\Student-Information-Management-System\\file1.txt"))
 			{
-				students = Load();
+				Load();
 			}
-			MainMenu();
+			// 재귀 안되도록
+			while (MainMenu()) { }
+		}
+		private static void Load()
+		{
+			// using을 안쓰면 reader.Close()를 써야함
+			StreamReader reader = new StreamReader("C:\\Users\\YongHo\\Student-Information-Management-System\\file1.txt");
+			{
+				string line;
+				while ((line = reader.ReadLine()) != null)
+				{
+					string[] fields = line.Split(',');
+					string name = fields[0];
+					string id = fields[1];
+					string birth = fields[2];
+					string department = fields[3];
+					string tel = fields[4];
+
+					Student student = new Student(name, id, birth, department, tel);
+					students.Add(id, student);
+				}
+				reader.Close();
+			}
 		}
 
-		public static void MainMenu()
+		// 함수는 동사로
+		public static bool MainMenu()
 		{
 			Console.WriteLine("1. Insertion");
 			Console.WriteLine("2. Search");
@@ -45,30 +72,44 @@ namespace StudentInformationManagementSystem
 			int input = Convert.ToInt32(Console.ReadLine());
 
 			Console.WriteLine();
+
+			// 예외 처리 필요
+			// 디폴트문 내용이 없어서 잘못된 숫자 입력시 끝남
+			// switch문에는 진입은 함
+			bool terminateFlag = true;
 			switch (input)
 			{
 				case 1:
 					Insertion();
+					//terminateFlag = true;
 					break;
 
 				case 2:
 					Search();
+					//terminateFlag = true;
 					break;
 
 				case 3:
 					SortingOption();
+					//terminateFlag = true;
 					break;
 
 				case 4:
-					Exit();
-					return;
+					Console.Write("프로그램을 종료합니다.");
+					terminateFlag = false;
+					break;
 			}
+			return terminateFlag;
 		}
 
 		public static void Insertion()
 		{
 			Console.Write("Name ");
 			string name = Console.ReadLine();
+			if (name.Length > 15)
+			{
+				throw new ArgumentException("Student ID must be 10 digits");
+			}
 
 			Console.Write("Student ID (10 digits) ");
 			string id = Console.ReadLine();
@@ -90,21 +131,32 @@ namespace StudentInformationManagementSystem
 			Console.Write("Tel ");
 			string tel = Console.ReadLine();
 
-			try
+			// try catch는 비정상적인 값이 입력됐을때 사용하면 좋음
+			// 지금 경우는 단순히 중복되는 단어이므로 containskey를 사용해서 예외처리
+			if (students.ContainsKey(id))
+			{
+				Console.WriteLine();
+				Console.WriteLine("Error : Already inserted");
+			}
+			else
 			{
 				Student student = new Student(name, id, birth, department, tel);
 				students.Add(id, student);
 				students = SortByName(students);
 				Save(students);
 			}
-			catch (ArgumentException)
-			{
-				Console.WriteLine();
-				Console.WriteLine("Error : Already inserted");
-			}
-
 			Console.WriteLine();
-			MainMenu();
+		}
+
+		public static void Save(Dictionary<string, Student> students)
+		{
+			using (StreamWriter writer = new StreamWriter("C:\\Users\\YongHo\\Student-Information-Management-System\\file1.txt"))
+			{
+				foreach (Student student in students.Values)
+				{
+					writer.WriteLine("{0},{1},{2},{3},{4}", student.name, student.id, student.birth, student.department, student.tel);
+				}
+			}
 		}
 
 		public static void Search()
@@ -141,66 +193,24 @@ namespace StudentInformationManagementSystem
 					break;
 			}
 			Console.WriteLine();
-			MainMenu();
 		}
 
-		public static void SortingOption()
-		{
-			Console.WriteLine("1. Sort by name");
-			Console.WriteLine("2. Sort by student ID");
-			Console.WriteLine("3. Sort by Admission Year");
-			Console.WriteLine("4. Sort by Department name");
-			Console.Write(">");
-			int input = Convert.ToInt32(Console.ReadLine());
+		// PrintStudent 메소드 필요, 매개변수는 Student student
 
-			Console.WriteLine();
-			switch (input)
-			{
-				case 1:
-					students = SortByName(students);
-					Console.WriteLine("Sort by name complete");
-					break;
-
-				case 2:
-					students = SortByID(students);
-					Console.WriteLine("Sort by ID complete");
-					break;
-
-				case 3:
-					students = SortByBirth(students);
-					Console.WriteLine("Sort by Admission Year complete");
-					break;
-
-				case 4:
-					students = SortByDepartment(students);
-					Console.WriteLine("Sort by Department name complete");
-					break;
-			}
-			Console.WriteLine();
-			MainMenu();
-		}
-
-		public static void Exit()
-		{
-			Console.Write("프로그램을 종료합니다.");
-		}
-
-		public static string format = "{0,-20} {1,-20} {2,-20} {3,-20} {4,-20}";
 		private static void SearchByName()
 		{
 			Console.Write("Name keyword? ");
 			string name = Console.ReadLine();
 			Console.WriteLine(format, "Name", "StudentID", "Dept", "Birth Year", "Tel");
 			bool dataExist = false;
-			foreach (Student student in students.Values)
+
+			// Map은 이렇게 접근
+			if (students.ContainsKey(name))
 			{
-				if (student.name == name)
-				{
-					Console.WriteLine(format, student.name, student.id, student.department, student.birth, student.tel);
-					dataExist = true;
-				}
+				Student student = students[name];
+				Console.WriteLine(format, student.name, student.id, student.department, student.birth, student.tel);
 			}
-			if (!dataExist)
+			else
 			{
 				Console.WriteLine("Data does not exist.");
 			}
@@ -275,6 +285,42 @@ namespace StudentInformationManagementSystem
 			}
 		}
 
+		public static void SortingOption()
+		{
+			Console.WriteLine("1. Sort by name");
+			Console.WriteLine("2. Sort by student ID");
+			Console.WriteLine("3. Sort by Admission Year");
+			Console.WriteLine("4. Sort by Department name");
+			Console.Write(">");
+			int input = Convert.ToInt32(Console.ReadLine());
+
+			Console.WriteLine();
+			switch (input)
+			{
+				case 1:
+					students = SortByName(students);
+					Console.WriteLine("Sort by name complete");
+					break;
+
+				case 2:
+					students = SortByID(students);
+					Console.WriteLine("Sort by ID complete");
+					break;
+
+				case 3:
+					students = SortByBirth(students);
+					Console.WriteLine("Sort by Admission Year complete");
+					break;
+
+				case 4:
+					students = SortByDepartment(students);
+					Console.WriteLine("Sort by Department name complete");
+					break;
+			}
+			Console.WriteLine();
+		}
+
+		// 코드 분석 필요
 		private static Dictionary<string, Student> SortByName(Dictionary<string, Student> students)
 		{
 			return students.OrderBy(x => x.Value.name).ToDictionary(x => x.Key, x => x.Value);
@@ -293,39 +339,6 @@ namespace StudentInformationManagementSystem
 		private static Dictionary<string, Student> SortByDepartment(Dictionary<string, Student> students)
 		{
 			return students.OrderBy(x => x.Value.department).ToDictionary(x => x.Key, x => x.Value);
-		}
-
-		public static void Save(Dictionary<string, Student> students)
-		{
-			using (StreamWriter writer = new StreamWriter("C:\\Users\\YongHo\\Student-Information-Management-System\\file1.txt"))
-			{
-				foreach (Student student in students.Values)
-				{
-					writer.WriteLine("{0},{1},{2},{3},{4}", student.name, student.id, student.birth, student.department, student.tel);
-				}
-			}
-		}
-
-		public static Dictionary<string, Student> Load()
-		{
-			using (StreamReader reader = new StreamReader("C:\\Users\\YongHo\\Student-Information-Management-System\\file1.txt"))
-			{
-				string line;
-				while ((line = reader.ReadLine()) != null)
-				{
-					string[] fields = line.Split(',');
-					string name = fields[0];
-					string id = fields[1];
-					string birth = fields[2];
-					string department = fields[3];
-					string tel = fields[4];
-
-					Student student = new Student(name, id, birth, department, tel);
-					students.Add(id, student);
-				}
-			}
-
-			return students;
 		}
 	}
 }
