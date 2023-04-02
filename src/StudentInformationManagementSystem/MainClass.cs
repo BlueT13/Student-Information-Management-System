@@ -4,30 +4,12 @@ using System.Xml.Linq;
 
 namespace StudentInformationManagementSystem
 {
-	// TODO(이태환): 클래스별로 파일 분류
 	// TODO(이태환): 프린트 메소드와 기능 메소드 분류
-	// 리스트나 벡터를 사용해도 무방
-	public class Student
-	{
-		public string name;
-		public string id;
-		public string birth;
-		public string department;
-		public string tel;
-
-		public Student(string name, string id, string birth, string department, string tel)
-		{
-			this.name = name;
-			this.id = id;
-			this.birth = birth;
-			this.department = department;
-			this.tel = tel;
-		}
-	}
-
 	internal class MainClass
 	{
 		public static string format = "{0,-20} {1,-20} {2,-20} {3,-20} {4,-20}";
+
+		// 리스트나 벡터를 사용해도 무방
 		public static Dictionary<string, Student> students = new Dictionary<string, Student>();
 
 		public static void Main(string[] args)
@@ -39,9 +21,10 @@ namespace StudentInformationManagementSystem
 			// 재귀 안되도록
 			while (MainMenu()) { }
 		}
+
 		private static void Load()
 		{
-			// using을 안쓰면 reader.Close()를 써야함
+			// using을 안쓰면 reader.Close() 사용 필요
 			StreamReader reader = new StreamReader("C:\\Users\\YongHo\\Student-Information-Management-System\\file1.txt");
 			{
 				string line;
@@ -61,7 +44,7 @@ namespace StudentInformationManagementSystem
 			}
 		}
 
-		// 함수는 동사로
+		// 함수명은 동사로
 		public static bool MainMenu()
 		{
 			Console.WriteLine("1. Insertion");
@@ -71,12 +54,10 @@ namespace StudentInformationManagementSystem
 			Console.Write(">");
 			int input = Convert.ToInt32(Console.ReadLine());
 
-			Console.WriteLine();
-
-			// 예외 처리 필요
-			// 디폴트문 내용이 없어서 잘못된 숫자 입력시 끝남
-			// switch문에는 진입은 함
+			// 잘못된 숫자 입력 시 디폴트문 내용이 없어서 종료 됨 (예외 처리 필요)
+			// 잘못된 숫자를 입력해도 switch문에는 진입은 함
 			bool terminateFlag = true;
+			Console.WriteLine();
 			switch (input)
 			{
 				case 1:
@@ -195,8 +176,7 @@ namespace StudentInformationManagementSystem
 			Console.WriteLine();
 		}
 
-		// PrintStudent 메소드 필요, 매개변수는 Student student
-
+		// TODO(이태환): PrintStudent 메소드 필요, 매개변수는 Student student
 		private static void SearchByName()
 		{
 			Console.Write("Name keyword? ");
